@@ -1,4 +1,5 @@
-#### Template Python project...
+#### Dump Trivy Operator reports.
+- Official CRDs reference: [CRDs](https://aquasecurity.github.io/trivy-operator/latest/docs/crds/)
 
 #### Configure environment:
 ```bash
