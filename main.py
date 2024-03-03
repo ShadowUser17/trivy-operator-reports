@@ -1,6 +1,7 @@
 # https://github.com/kubernetes-client/python
 import os
 import sys
+import yaml
 import json
 import pathlib
 import logging
@@ -41,7 +42,7 @@ class TrivyReports:
         res = self._custom_api.list_namespaced_custom_object(self._resource_group, self._resource_version, ns_name, rs_type)
         return res.get("items", [])
 
-    def dump_custom_object(self, item: dict) -> None:
+    def dump_custom_object(self, item: dict, format: str) -> None:
         logging.debug("Run: dump_custom_object()")
 
         path = self._resource_base_dir
@@ -53,13 +54,18 @@ class TrivyReports:
         path.parent.mkdir(parents=True, exist_ok=True)
 
         logging.info("Dump: {}".format(path))
-        path.write_text(json.dumps(item))
+        if format == "yaml":
+            path.write_text(yaml.dump(item.get("report", {})))
+
+        else:
+            path.write_text(json.dumps(item.get("report", {})))
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("command", choices=["resource_types", "list_resources", "dump_resources"], help="Select command.")
     parser.add_argument("--type", dest="type", help="Select specific report type.")
+    parser.add_argument("--format", dest="format", default="yaml", choices=["json", "yaml"], help="Select output format.")
     parser.add_argument("--namespaced", dest="namespaced", action="store_true", help="Select namespaced or cluster objects.")
     return parser.parse_args()
 
@@ -107,11 +113,11 @@ try:
         if args.namespaced:
             for ns_name in client.get_namespaces():
                 for item in client.get_namespaced_custom_objects(ns_name, rs_type):
-                    client.dump_custom_object(item)
+                    client.dump_custom_object(item, args.format)
 
         else:
             for item in client.get_cluster_custom_objects(rs_type):
-                client.dump_custom_object(item)
+                client.dump_custom_object(item, args.format)
 
 except Exception:
     logging.error(traceback.format_exc())
