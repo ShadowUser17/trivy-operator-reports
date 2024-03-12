@@ -1,5 +1,6 @@
 #### Dump Trivy Operator reports.
-- Official CRDs reference: [CRDs](https://aquasecurity.github.io/trivy-operator/latest/docs/crds/)
+- [trivy-operator-crds](https://aquasecurity.github.io/trivy-operator/latest/docs/crds/)
+- [k8s-python-client](https://github.com/kubernetes-client/python)
 
 #### Configure environment:
 ```bash
@@ -30,7 +31,7 @@ python3 -m venv --upgrade-deps env && \
 ./env/bin/python3 main.py resource_types --namespaced
 ```
 ```bash
-./env/bin/python3 main.py list_resources --type="vulnerabilityreports"
+./env/bin/python3 main.py list_resources --namespaced --type="vulnerabilityreports"
 ```
 
 #### How to dump cluster objects:
@@ -46,5 +47,5 @@ python3 -m venv --upgrade-deps env && \
 ./env/bin/python3 main.py resource_types --namespaced
 ```
 ```bash
-./env/bin/python3 main.py dump_resources --type="vulnerabilityreports"
+./env/bin/python3 main.py dump_resources --namespaced --type="vulnerabilityreports"
 ```
